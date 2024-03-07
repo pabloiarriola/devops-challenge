@@ -1,1 +1,1 @@
-Este repositorio contiene el código Python a utilizar la prueba técnica de DevOps
+Este repositorio contiene el código Python a utilizar en la prueba técnica de DevOps
