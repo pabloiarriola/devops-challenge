@@ -1,0 +1,66 @@
+name: SAM Deployment
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+
+permissions:
+  id-token: write   
+  contents: read   
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: arn:aws:iam::045587255599:role/GitHubAction-AssumeRoleWithAction
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Install SAM CLI
+        run: |
+          wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+          unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+          sudo ./sam-installation/install
+          sam --version
+
+      - name: Build SAM Application
+        run: sam build
+
+      - name: Deploy to Development
+        if: github.ref == 'refs/heads/dev'
+        run: sam deploy --config-env development
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: sam deploy --config-env staging
+
+      - name: Deploy to Production with Canary Deployment
+        if: github.ref == 'refs/heads/main'
+        run: sam deploy --config-env production --parameter-overrides DeploymentType=Canary
+
+      - name: Mock Code Analysis #this is to show how the actual workflow would be, we could have something like sonarcloud here
+        if: github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main'
+        run: echo "Performing mock code analysis..."
