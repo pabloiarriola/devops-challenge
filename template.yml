@@ -40,11 +40,34 @@ Resources:
         team: "devops"
         scope: !Ref Environment
 
+  ApiGatewayRole:
+  Type: AWS::IAM::Role
+  Properties:
+    DependsOn: MyLambdaFunction
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+          Action: sts:AssumeRole
+    Policies:
+      - PolicyName: InvokeLambdaPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 
+                - lambda:InvokeFunction
+              Resource:
+                Fn::GetAtt: [MyLambdaFunction, Arn]
+
 
   MyApiGateway:
     Type: AWS::Serverless::Api
     Properties:
       StageName: v1
+      RoleArn: !GetAtt ApiGatewayRole.Arn
       DefinitionBody:
         swagger: "2.0"
         info:
