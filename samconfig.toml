@@ -1,0 +1,27 @@
+version = 0.1
+[development.deploy.parameters]
+stack_name = "lambda-api-publico-development"
+resolve_s3 = true
+s3_prefix = "lambda-api-publico-development"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"development\""
+image_repositories = []
+
+[staging.deploy.parameters]
+stack_name = "lambda-api-publico-staging"
+resolve_s3 = true
+s3_prefix = "lambda-api-publico-staging"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"staging\""
+image_repositories = []
+
+[production.deploy.parameters]
+stack_name = "lambda-api-publico-production"
+resolve_s3 = true
+s3_prefix = "lambda-api-publico-production"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Environment=\"production\""
+image_repositories = []
