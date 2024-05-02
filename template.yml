@@ -35,35 +35,21 @@ Resources:
         Type: !If [ IsProduction, "Canary10Percent30Minutes", "AllAtOnce" ]
       Policies:
         - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Sid: ApiGatewayExecutionPermission
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt MyApiGateway.Arn
       Tags:
         owner: "parriola"
         team: "devops"
         scope: !Ref Environment
 
-  ApiGatewayRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: apigateway.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: InvokeLambdaPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action: lambda:InvokeFunction
-                Resource: !GetAtt MyLambdaFunction.Arn
-
   MyApiGateway:
     Type: AWS::Serverless::Api
     Properties:
       StageName: v1
-      RoleArn: !GetAtt ApiGatewayRole.Arn
       DefinitionBody:
         swagger: "2.0"
         info:
