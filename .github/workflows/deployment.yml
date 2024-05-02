@@ -45,9 +45,9 @@ jobs:
       - name: Build SAM Application
         run: sam build
 
-      - name: Deploy to developmentelopment
+      - name: Deploy to development
         if: github.ref == 'refs/heads/development'
-        run: sam deploy --config-env developmentelopment
+        run: sam deploy --config-env development
 
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
