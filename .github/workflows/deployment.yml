@@ -55,7 +55,7 @@ jobs:
 
       - name: Deploy to Production with Canary Deployment
         if: github.ref == 'refs/heads/main'
-        run: sam deploy --config-env production --parameter-overrides DeploymentType=Canary
+        run: sam deploy --config-env production 
 
       - name: Mock Code Analysis Main #this is to show how the actual workflow would be, we could have something like sonarcloud here
         if: github.event_name == 'pull_request' && github.base_ref == 'refs/heads/main'
