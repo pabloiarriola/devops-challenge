@@ -45,7 +45,7 @@ jobs:
       - name: Build SAM Application
         run: sam build
 
-      - name: Deploy to development
+      - name: Deploy to development # here we could just have code analysis, this will depend on the company policy on how the deployment to dev is done. They could use sam local invoke to try it out in their computer
         if: github.ref == 'refs/heads/development'
         run: sam deploy --config-env development
 
