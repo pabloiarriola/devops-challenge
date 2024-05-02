@@ -40,7 +40,7 @@ Resources:
             Effect: Allow
             Action:
               - lambda:InvokeFunction
-            Resource: !GetAtt MyApiGateway.Arn
+            Resource: "*"
       Tags:
         owner: "parriola"
         team: "devops"
