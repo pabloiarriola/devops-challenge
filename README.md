@@ -80,3 +80,5 @@ The role it has can send logs to cloudwatch and you can use the specific lambda 
 **Code analysis:** implement a static code analysis like for example sonar cloud 
 
 **Define development deployments:** define how the deployments  to development will work, you could use sam local invoke in their local machines for them to try as having to wait for each commit to deploy can be time consuming. Normally development deployment is handled by the developers. 
+
+**Use separate yml for api gateway:** this is to not have circular dependencies with the lambdas and to be able to close the invoke permissions on them 
