@@ -48,7 +48,7 @@ Resources:
       DefinitionBody:
         swagger: "2.0"
         info:
-          title: "API Gateway for Lambda"
+          title: !Sub "API Gateway for Lambda ${Environment}"
           version: "1.0"
         paths:
           /example:
