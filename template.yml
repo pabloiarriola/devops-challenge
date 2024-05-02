@@ -23,7 +23,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "lambda-api-publico-${Environment}"
-      Description: !Sub "A lambda function for api publico in ${Environment} "
+      Description: !Sub "A lambda function for api publico in ${Environment}"
       CodeUri: lambda_api_publico/
       Handler: api_publico.lambda_handler
       Runtime: python3.11
@@ -35,11 +35,16 @@ Resources:
         Type: !If [ IsProduction, "Canary10Percent30Minutes", "AllAtOnce" ]
       Policies:
         - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Sid: ApiGatewayExecutionPermission
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: "*"
       Tags:
         owner: "parriola"
         team: "devops"
         scope: !Ref Environment
-
 
   MyApiGateway:
     Type: AWS::Serverless::Api
@@ -48,7 +53,7 @@ Resources:
       DefinitionBody:
         swagger: "2.0"
         info:
-          title: "API Gateway for Lambda"
+          title: !Sub "API Gateway for Lambda ${Environment}"
           version: "1.0"
         paths:
           /example:
@@ -56,9 +61,7 @@ Resources:
               x-amazon-apigateway-integration:
                 httpMethod: GET
                 type: aws_proxy
-                uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations
-    DependsOn: MyLambdaFunction
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations"
 
 Outputs:
   LambdaFunctionArn:
